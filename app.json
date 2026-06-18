@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Lista Inteligente",
+    "slug": "lista-inteligente-compras",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#12281E"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "O app usa a camera para fotografar produtos da gondola.",
+        "NSPhotoLibraryUsageDescription": "O app permite escolher imagens de produtos."
+      }
+    },
+    "android": {
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ],
+      "package": "com.bruno.listainteligente",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#12281E"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f76a3ca2-bf79-4326-b61b-983a365e4cde"
+      }
+    }
+  }
+}
