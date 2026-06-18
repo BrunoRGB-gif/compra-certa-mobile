@@ -62,8 +62,10 @@ const emptyItem: ItemForm = {
 export default function App() {
   const [booting, setBooting] = useState(true);
   const [user, setUser] = useState<AppUser | null>(null);
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [items, setItems] = useState<ShoppingItem[]>([]);
   const [form, setForm] = useState<ItemForm>(emptyItem);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -130,7 +132,13 @@ export default function App() {
     }
   }
 
-  async function signIn() {
+  function changeAuthMode(nextMode: "login" | "register") {
+    setAuthMode(nextMode);
+    setPassword("");
+    setConfirmPassword("");
+  }
+
+  async function authenticate() {
     const cleanEmail = email.trim().toLowerCase();
 
     if (!isValidEmail(cleanEmail)) {
@@ -143,17 +151,25 @@ export default function App() {
       return;
     }
 
+    if (authMode === "register" && password !== confirmPassword) {
+      Alert.alert("Revise a senha", "A confirmacao deve ser igual a senha.");
+      return;
+    }
+
     setBusy(true);
     try {
       const { auth } = getFirebaseClient();
 
-      try {
+      if (authMode === "login") {
         await auth.signInWithEmailAndPassword(cleanEmail, password);
-      } catch {
+      } else {
         await auth.createUserWithEmailAndPassword(cleanEmail, password);
       }
     } catch (error) {
-      Alert.alert("Erro no login", getErrorMessage(error));
+      Alert.alert(
+        authMode === "login" ? "Erro no login" : "Erro no cadastro",
+        getErrorMessage(error)
+      );
     } finally {
       setBusy(false);
     }
@@ -165,6 +181,7 @@ export default function App() {
     setUser(null);
     setItems([]);
     setPassword("");
+    setConfirmPassword("");
   }
 
   async function captureImage() {
@@ -378,6 +395,41 @@ export default function App() {
             confira o total antes de passar no caixa.
           </Text>
 
+          <View style={styles.authTabs}>
+            <Pressable
+              onPress={() => changeAuthMode("login")}
+              style={[
+                styles.authTab,
+                authMode === "login" && styles.authTabActive
+              ]}
+            >
+              <Text
+                style={[
+                  styles.authTabText,
+                  authMode === "login" && styles.authTabTextActive
+                ]}
+              >
+                Entrar
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => changeAuthMode("register")}
+              style={[
+                styles.authTab,
+                authMode === "register" && styles.authTabActive
+              ]}
+            >
+              <Text
+                style={[
+                  styles.authTabText,
+                  authMode === "register" && styles.authTabTextActive
+                ]}
+              >
+                Criar conta
+              </Text>
+            </Pressable>
+          </View>
+
           <Text style={styles.inputLabel}>E-mail</Text>
           <TextInput
             autoCapitalize="none"
@@ -397,10 +449,29 @@ export default function App() {
             style={styles.input}
             value={password}
           />
+          {authMode === "register" ? (
+            <>
+              <Text style={styles.inputLabel}>Confirmar senha</Text>
+              <TextInput
+                onChangeText={setConfirmPassword}
+                placeholder="Digite a senha novamente"
+                placeholderTextColor="#8B9188"
+                secureTextEntry
+                style={styles.input}
+                value={confirmPassword}
+              />
+            </>
+          ) : null}
 
-          <Pressable disabled={busy} onPress={signIn} style={styles.primaryButton}>
+          <Pressable disabled={busy} onPress={authenticate} style={styles.primaryButton}>
             <Text style={styles.primaryButtonText}>
-              {busy ? "Entrando..." : "Entrar ou criar conta"}
+              {busy
+                ? authMode === "login"
+                  ? "Entrando..."
+                  : "Criando conta..."
+                : authMode === "login"
+                  ? "Entrar"
+                  : "Criar conta"}
             </Text>
           </Pressable>
         </KeyboardAvoidingView>
@@ -631,6 +702,33 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     lineHeight: 34,
     marginBottom: 9
+  },
+  authTab: {
+    alignItems: "center",
+    borderRadius: 8,
+    flex: 1,
+    paddingVertical: 11
+  },
+  authTabActive: {
+    backgroundColor: "#1F5E43"
+  },
+  authTabText: {
+    color: "#596057",
+    fontSize: 14,
+    fontWeight: "900"
+  },
+  authTabTextActive: {
+    color: "#FFFFFF"
+  },
+  authTabs: {
+    backgroundColor: "#EEF3EC",
+    borderColor: "#DCE4DD",
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 6,
+    marginBottom: 18,
+    padding: 5
   },
   brand: {
     color: "#1F5E43",
