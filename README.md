@@ -1,21 +1,40 @@
-# Lista Inteligente de Compras
+# Compra Certa Mobile
 
-Aplicativo mobile em React Native com TypeScript para conferência de compras por imagem.
+Aplicativo mobile em React Native com Expo e TypeScript para conferência de compras por imagem.
 
-O app permite fotografar um produto na gôndola, informar o valor unitário e a quantidade, e acompanhar o total por item e o total geral da compra.
+O app permite fotografar um produto, informar valor unitário e quantidade, salvar a mercadoria no Firebase e acompanhar o total por item e o total geral da compra.
 
 ## Funcionalidades
 
 - Login com e-mail e senha.
-- Cadastro automático de usuário no primeiro acesso.
+- Cadastro de usuário com confirmação de senha.
 - Captura de foto pela câmera.
 - Escolha de imagem pela galeria.
 - Tratamento da imagem com redimensionamento e compressão.
-- Cadastro de produto com nome, valor unitário e quantidade.
+- Cadastro de produto com nome, valor unitário, quantidade e foto.
 - Cálculo automático do total por item e do total geral.
 - Edição de quantidade, edição completa do produto e exclusão.
 - Lista separada por usuário.
 - Integração com Firebase Authentication, Cloud Firestore e Firebase Storage.
+
+## Arquivos mobile
+
+Este projeto usa Expo e React Native. A pasta `android/` foi gerada com:
+
+```bash
+npx expo prebuild --platform android --no-install
+```
+
+Essa pasta contém os arquivos nativos Android que mostram a parte mobile do projeto, como Gradle, Manifest e estrutura do aplicativo Android.
+
+Arquivos principais:
+
+- `App.tsx`: tela principal e regras do aplicativo.
+- `firebaseClient.ts`: inicialização dos serviços Firebase.
+- `firebaseConfig.ts`: configuração do Firebase.
+- `app.json`: configuração Expo do aplicativo.
+- `android/`: projeto nativo Android gerado pelo Expo.
+- `package.json`: dependências e comandos do projeto.
 
 ## Tecnologias
 
@@ -36,13 +55,19 @@ Instale as dependências:
 npm install
 ```
 
-Inicie o projeto:
+Inicie o projeto pelo Expo:
 
 ```bash
 npm start
 ```
 
 Depois, abra pelo Expo Go no celular ou pelo emulador Android.
+
+Com a pasta `android/` gerada, também é possível rodar o projeto Android nativo:
+
+```bash
+npm run android
+```
 
 ## Como configurar Firebase
 
@@ -73,7 +98,7 @@ Depois publique as regras dos arquivos:
 ## Roteiro de apresentação
 
 1. Abrir o app.
-2. Fazer login com e-mail e senha.
+2. Criar uma conta ou entrar com e-mail e senha.
 3. Tocar em `+ Produto`.
 4. Tirar foto de um produto pela câmera ou escolher uma imagem da galeria.
 5. Informar nome, valor unitário e quantidade.
@@ -84,4 +109,8 @@ Depois publique as regras dos arquivos:
 
 ## Observação
 
-O projeto atende ao Projeto 2 do enunciado: App de Conferência de Compras por Imagem, usando React Native, Firebase Authentication, Cloud Firestore, Firebase Storage, câmera e manipulação de imagem.
+Depois que a pasta `android/` existe, se mudar configurações como ícone, permissões, nome do app ou splash no `app.json`, rode novamente:
+
+```bash
+npx expo prebuild --platform android
+```
